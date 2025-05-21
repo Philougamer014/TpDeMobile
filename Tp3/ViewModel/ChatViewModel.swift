@@ -14,10 +14,13 @@ class ChatViewModel: ObservableObject {
         Auth.auth().currentUser?.uid
     }
     
-    func listenForMessage() {
+    func listenForMessage(with chatPartnerId: String) {
         guard let currentUserId = userId else { return }
 
+        listener?.remove() 
+
         listener = db.collection("message")
+            .whereField("participants", arrayContains: currentUserId)
             .order(by: "timestamp")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let documents = snapshot?.documents else { return }
@@ -34,7 +37,12 @@ class ChatViewModel: ObservableObject {
                             return nil
                         }
 
-                        if senderId == currentUserId || receiverId == currentUserId {
+        
+                        let isBetweenUsers =
+                            (senderId == currentUserId && receiverId == chatPartnerId) ||
+                            (senderId == chatPartnerId && receiverId == currentUserId)
+
+                        if isBetweenUsers {
                             return ChatMessage(
                                 id: doc.documentID,
                                 text: text,
@@ -51,6 +59,7 @@ class ChatViewModel: ObservableObject {
     }
 
 
+    @MainActor
     func sendMessage(to receiverId: String) async {
         guard let senderId = userId else { return }
 
@@ -59,6 +68,7 @@ class ChatViewModel: ObservableObject {
                 "text": newMessage,
                 "senderId": senderId,
                 "receiverId": receiverId,
+                "participants": [senderId, receiverId],
                 "timestamp": FieldValue.serverTimestamp()
             ])
             newMessage = ""

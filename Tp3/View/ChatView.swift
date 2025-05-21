@@ -44,13 +44,14 @@ struct ChatView: View {
                 Button("Send") {
                     Task {
                         await chatViewModel.sendMessage(to: chatPartnerId)
+                        chatViewModel.listenForMessage(with: chatPartnerId)
                     }
                 }
             }
             .padding()
         }
         .onAppear {
-            chatViewModel.listenForMessage()
+            chatViewModel.listenForMessage(with: chatPartnerId)
         }
         .navigationTitle("Chat")
         .navigationBarTitleDisplayMode(.inline)

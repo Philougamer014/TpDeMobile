@@ -1,3 +1,12 @@
+//
+//  CompleteQuestDTO.swift
+//  Tp3
+//
+//  Created by Philippe Léonard on 2025-05-21.
+//
+
+
 struct CompleteQuestDTO: Encodable {
-    let id: Int
+    let quest_id: Int
 }
+

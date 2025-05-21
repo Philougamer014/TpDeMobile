@@ -19,10 +19,11 @@ class QuestViewModel: ObservableObject {
         let currentLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
         let distance = questLocation.distance(from: currentLocation)
 
-        if distance <= 50 { 
+        if distance <= 50 {
             do {
-                let result = try await questService.completeQuest(id: quest.id.hashValue)
-                print("Quest Completed: \(result.description)")
+                let dto = CompleteQuestDTO(quest_id: quest.id.hashValue)
+                let result = try await questService.completeQuest(dto: dto)
+                print("Quest Completed: \(result.message)")
                 await loadQuests()
             } catch {
                 print("Failed to complete quest: \(error)")
@@ -31,4 +32,5 @@ class QuestViewModel: ObservableObject {
             print("Too far from quest.")
         }
     }
+       
 }

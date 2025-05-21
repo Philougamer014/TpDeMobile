@@ -18,7 +18,7 @@ class QuestServices: Services {
         return try await postRequestWithToken(endpoint: "mapventure/create-quest", dto: dto)
     }
     
-    func completeQuest(id:Int) async throws->String{
-        return try await postRequestWithToken(endpoint: "mapventure/complete-quest", dto:id)
+    func completeQuest(dto: CompleteQuestDTO) async throws -> SuccessMessage {
+        try await postRequestWithToken(endpoint: "mapventure/complete-quest", dto: dto)
     }
 }

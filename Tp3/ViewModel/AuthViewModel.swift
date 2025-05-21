@@ -5,7 +5,9 @@ import FirebaseFirestore
 class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var isAutentificated = false
+    private let db = Firestore.firestore()
     private var handle: AuthStateDidChangeListenerHandle?
+    @StateObject private var friendViewModel = FriendViewModel()
 
     init() {
         listenToAuthState()
@@ -102,15 +104,35 @@ class AuthViewModel: ObservableObject {
     @MainActor
     func syncUserWithApi() async {
         guard let name = Auth.auth().currentUser?.displayName ?? Auth.auth().currentUser?.email else { return }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
 
         let dto = SyncUserDTO(name: name)
+
         do {
-            let _: SuccessMessage? = try await Services().postRequestWithToken(endpoint: "mapventure/sync-user", dto: dto)
+            let _: SuccessMessage? = try await Services().postRequestWithToken(endpoint: "mapventure/sync-user", dto: dto.name)
             print("User synced with API")
+
+            
+            let doc = try await db.collection("users").document(uid).getDocument()
+            guard let data = doc.data() else { return }
+
+            let selfAsFriend = Friend(
+                id: uid,
+                firstName: data["firstName"] as? String ?? "",
+                lastName: data["lastName"] as? String ?? "",
+                username: data["username"] as? String ?? ""
+            )
+
+            
+            if !friendViewModel.friends.contains(where: { $0.id == uid }) {
+                friendViewModel.friends.append(selfAsFriend)
+            }
+
         } catch {
             print("Failed to sync user: \(error)")
         }
     }
+
 
 
 }

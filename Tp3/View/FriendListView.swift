@@ -15,7 +15,7 @@ struct FriendListView: View {
                 
                 Button("Search") {
                     Task {
-                        await friendListViewModel.searchUser(searchText: searchText)
+                        await friendListViewModel.searchUsers(matching: searchText)
                     }
                 }
 
@@ -53,7 +53,7 @@ struct FriendListView: View {
                 .padding(.top)
             }
             .task {
-                await friendListViewModel.fetchFriends()
+                await friendListViewModel.loadFriends()
             }
             .navigationTitle("Friends")
             .navigationBarTitleDisplayMode(.inline)

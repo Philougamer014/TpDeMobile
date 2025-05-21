@@ -6,6 +6,11 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
+            
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: "person.crop.circle")
+                }
             MapKitView()
                 .tabItem {
                     Label("Map", systemImage: "map")
@@ -14,11 +19,6 @@ struct MainTabView: View {
             FriendListView()
                 .tabItem {
                     Label("Friends", systemImage: "person.2.fill")
-                }
-
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
                 }
         }
         .onAppear {
