@@ -1,21 +1,15 @@
-import Foundation
-import SwiftData
-
-
-
-
-class Quest:Decodable {
-    var id: UUID
+class Quest: Decodable, Identifiable {
+    var id: Int  
     var latitude: Double
     var longitude: Double
-    var desc: String
-    var creatorName: String
-    
-    init(id: UUID, latitude: Double, longitude: Double, desc: String, creatorName: String) {
+    var description: String
+    var creatorName: String?
+
+    init(id: Int, latitude: Double, longitude: Double, description: String, creatorName: String?) {
         self.id = id
         self.latitude = latitude
         self.longitude = longitude
-        self.desc = desc
+        self.description = description
         self.creatorName = creatorName
     }
 }
@@ -23,21 +17,10 @@ class Quest:Decodable {
 struct QuestDTO: Encodable {
     var latitude: Double
     var longitude: Double
-    var desc: String
-    
-    init(latitude: Double, longitude: Double, desc: String) {
-        self.latitude = latitude
-        self.longitude = longitude
-        self.desc = desc
+    var description: String
+
+    enum CodingKeys: String, CodingKey {
+        case latitude, longitude
+        case description = "description"
     }
 }
-
-/*
- {
-   "id": 0,
-   "latitude": 0,
-   "longitude": 0,
-   "description": "string",
-   "creator_name": "string"
- }
- */

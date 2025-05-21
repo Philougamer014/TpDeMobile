@@ -56,9 +56,22 @@
 		BF0A7D432DB02A640087AC4A /* Tp3UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tp3UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BFDB55C82DDE20AF00657D41 /* Exceptions for "Tp3" folder in "Tp3" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BF0A7D2A2DB02A620087AC4A /* Tp3 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BF0A7D2D2DB02A620087AC4A /* Tp3 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BFDB55C82DDE20AF00657D41 /* Exceptions for "Tp3" folder in "Tp3" target */,
+			);
 			path = Tp3;
 			sourceTree = "<group>";
 		};
@@ -453,8 +466,12 @@
 				CODE_SIGN_ENTITLEMENTS = Tp3/Tp3.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUD2Y7NLMN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tp3/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "just give me your location";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = test;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -490,8 +507,12 @@
 				CODE_SIGN_ENTITLEMENTS = Tp3/Tp3.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUD2Y7NLMN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tp3/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "just give me your location";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = test;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

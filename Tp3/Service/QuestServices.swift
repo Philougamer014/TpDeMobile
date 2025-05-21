@@ -10,15 +10,15 @@ import Foundation
 class QuestServices: Services {
 
     func fetchAll() async throws -> [Quest] {
-        return try await fetchAll(endpoint: "mapventure/available-quests")
+        return try await fetchWithToken(endpoint: "mapventure/available-quests")
     }
 
     func createQuest(latitude:Double, longitude:Double, desc:String)async throws->Quest {
-        let dto = QuestDTO( latitude: latitude, longitude: longitude, desc: desc)
-        return try await postRequestWithToken(endpoint: "games/game", dto: dto)
+        let dto = QuestDTO( latitude: latitude, longitude: longitude, description: desc)
+        return try await postRequestWithToken(endpoint: "mapventure/create-quest", dto: dto)
     }
     
     func completeQuest(id:Int) async throws->String{
-        return try await postRequestWithToken(endpoint: "games/game", dto:id)
+        return try await postRequestWithToken(endpoint: "mapventure/complete-quest", dto:id)
     }
 }

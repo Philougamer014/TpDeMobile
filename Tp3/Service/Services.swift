@@ -87,8 +87,42 @@ class Services {
         }
     }
     
+    func fetchWithToken<T: Decodable>(endpoint: String) async throws -> T {
+        let path = baseURL + endpoint
+
+        guard let apiToken = TokenHandler.retrieveToken(),
+              let url = URL(string: path) else {
+            throw HTTPError.invalidToken
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(apiToken)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw HTTPError.invalidResponse
+        }
+
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        if let raw = String(data: data, encoding: .utf8) {
+            print("Raw response: \(raw)")
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            print("HTTP Status: \((response as? HTTPURLResponse)?.statusCode ?? -1)")
+            throw HTTPError.invalidResponse
+        }
+        
+        return try decoder.decode(T.self, from: data)
+    }
+
+    
     func postRequest<T: Encodable, U: Decodable>(endpoint: String, dto: T) async throws -> U? {
-        let urlString = "https://api-mobile.cegeplabs.qc.ca/todo/\(endpoint)"
+        let urlString = "https://api-mobile.cegeplabs.qc.ca/\(endpoint)"
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
         }
@@ -158,6 +192,8 @@ class Services {
         
     }
     
+    
+    
     func postRequestWithToken<T: Encodable, U: Decodable>(endpoint: String, dto: T) async throws -> U {
         let path = baseURL + endpoint
         
@@ -180,6 +216,7 @@ class Services {
         
         request.httpBody = requestBody
         
+        
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             
@@ -187,12 +224,25 @@ class Services {
                 throw HTTPError.invalidResponse
             }
             
+            if let raw = String(data: data, encoding: .utf8) {
+                print("Raw response: \(raw)")
+            }
+            
             guard (200...299).contains(httpResponse.statusCode) else {
                 throw HTTPError.statusCode(httpResponse.statusCode)
             }
             
+            if let raw = String(data: data, encoding: .utf8) {
+                print("Raw response: \(raw)")
+            }
+            
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
+            
+            if let raw = String(data: data, encoding: .utf8) {
+                print("Raw response: \(raw)")
+            }
+            
             return try decoder.decode(U.self, from: data)
             
         } catch {

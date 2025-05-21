@@ -17,9 +17,15 @@ class AuthViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.user = user
                 self.isAutentificated = (user != nil)
+
+                if user != nil {
+                    self.storeToken()
+                    await self.syncUserWithApi()
+                }
             }
         }
     }
+
 
     deinit {
         if let handle = handle {
@@ -31,9 +37,16 @@ class AuthViewModel: ObservableObject {
         Auth.auth().signIn(withEmail: email, password: password) { _, error in
             if let error = error {
                 print("Login error:", error.localizedDescription)
+            } else {
+                self.storeToken()
+
+                Task {
+                    await self.syncUserWithApi()
+                }
             }
         }
     }
+
 
     func logout() {
         do {
@@ -61,12 +74,43 @@ class AuthViewModel: ObservableObject {
                 "username": username,
                 "lastname": lastname,
                 "firstname": firstname,
-                "email":email
+                "email": email
             ]) { error in
                 if let error = error {
                     print("Firestore error:", error.localizedDescription)
                 }
             }
+
+            self.storeToken()
+            Task{
+                await self.syncUserWithApi()
+            }
         }
     }
+
+    private func storeToken() {
+        Auth.auth().currentUser?.getIDToken(completion: { token, error in
+            if let token = token {
+                let success = TokenHandler.saveToken(token: token)
+                print(success ? "Token saved to Keychain." : "Failed to save token.")
+            } else {
+                print("Failed to get token: \(String(describing: error?.localizedDescription)) ?? \"Unknown error\")")
+            }
+        })
+    }
+    
+    @MainActor
+    func syncUserWithApi() async {
+        guard let name = Auth.auth().currentUser?.displayName ?? Auth.auth().currentUser?.email else { return }
+
+        let dto = SyncUserDTO(name: name)
+        do {
+            let _: SuccessMessage? = try await Services().postRequestWithToken(endpoint: "mapventure/sync-user", dto: dto)
+            print("User synced with API")
+        } catch {
+            print("Failed to sync user: \(error)")
+        }
+    }
+
+
 }

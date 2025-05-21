@@ -12,7 +12,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if authViewModel.isAutentificated {
-                FriendListView().environmentObject(AuthViewModel())
+                MainTabView()
             }else{
                 LoginView()
             }
